@@ -1,11 +1,14 @@
 export function calcTotals(items) {
   let subtotal = 0;
-  items.forEach(item => {
+  const rows = items.map(item => {
     const qty = parseFloat(item.qty) || 0;
     const rate = parseFloat(item.rate) || 0;
-    subtotal += qty * rate;
+    const amount = qty * rate;
+    subtotal += amount;
+    return { ...item, amount };
   });
   return {
+    rows,
     subtotal,
     total: subtotal
   };

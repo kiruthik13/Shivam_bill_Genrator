@@ -5,7 +5,7 @@ export function useBillStore() {
   const [billNo, setBillNo] = useState("");
   const today = new Date().toISOString().split('T')[0];
   const [date, setDate] = useState(today);
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("9965374580");
   const [sellerName, setSellerName] = useState("SIVAM STATIONERY");
   const [sellerAddr, setSellerAddr] = useState("Muthur road, Vellakovil – 638111");
   const [custName, setCustName] = useState("ITC-LIMITED");
@@ -32,7 +32,7 @@ export function useBillStore() {
   const resetStore = () => {
     setCustName("");
     setCustAddr("");
-    setPhone("");
+    setPhone("9965374580");
     setItems([{ id: Date.now().toString(), description: "", qty: "", rate: "" }]);
     setNotes("");
     setDate(new Date().toISOString().split('T')[0]);
