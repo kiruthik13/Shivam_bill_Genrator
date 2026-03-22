@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-outfit bg-bg text-dark m-0 p-0;
+  }
+}
+
+/* Print CSS */
+@media print {
+  body * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  @page {
+    size: auto;
+    margin: 0;
+  }
+}
