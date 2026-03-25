@@ -5,6 +5,7 @@ import { formatDate } from '../utils/formatDate';
 import { generatePDF } from '../utils/generatePDF';
 
 export function BillPreview({ store, onClose, commitCounter }) {
+  const [paperSize, setPaperSize] = React.useState('A4'); // 'A4' or 'A5'
   const printRef = useRef(null);
 
   const handlePrint = useReactToPrint({
@@ -14,7 +15,7 @@ export function BillPreview({ store, onClose, commitCounter }) {
   });
 
   const handleDownloadPDF = () => {
-    generatePDF(store);
+    generatePDF(store, paperSize);
     commitCounter(store.billNo);
   };
 
@@ -29,6 +30,20 @@ export function BillPreview({ store, onClose, commitCounter }) {
           <span className="font-cormorant text-xl font-semibold">Sivam Stationery – Bill Preview</span>
         </div>
         <div className="flex gap-3 items-center">
+          <div className="flex bg-mid/30 p-1 rounded-lg gap-1 border border-mid/50 mr-2">
+            <button 
+              onClick={() => setPaperSize('A4')} 
+              className={`px-3 py-1 rounded text-xs font-bold transition-all ${paperSize === 'A4' ? 'bg-orange text-white' : 'text-gray-400 hover:text-white'}`}
+            >
+              A4
+            </button>
+            <button 
+              onClick={() => setPaperSize('A5')} 
+              className={`px-3 py-1 rounded text-xs font-bold transition-all ${paperSize === 'A5' ? 'bg-orange text-white' : 'text-gray-400 hover:text-white'}`}
+            >
+              A5
+            </button>
+          </div>
           <button onClick={() => handlePrint()} className="flex flex-row items-center gap-2 bg-mid hover:bg-mid/80 px-4 py-2 rounded transition-colors text-sm font-medium">
             🖨 Print
           </button>
@@ -42,11 +57,16 @@ export function BillPreview({ store, onClose, commitCounter }) {
       </div>
 
       {/* A4 Sheet Container */}
-      <div className="w-full max-w-[210mm] print:max-w-none m-4 print:m-0 flex-shrink-0 flex flex-col no-print-margin" style={{ minHeight: 'calc(100vh - 100px)' }}>
+      <div className={`w-full ${paperSize === 'A4' ? 'max-w-[210mm]' : 'max-w-[148mm]'} print:max-w-none m-4 print:m-0 flex-shrink-0 flex flex-col no-print-margin`} style={{ minHeight: 'calc(100vh - 100px)' }}>
         <div 
           ref={printRef}
           className="bg-white mx-auto shadow-xl print:shadow-none relative flex flex-col" 
-          style={{ width: '210mm', minHeight: '297mm', padding: '15mm 15mm 20mm 15mm', boxSizing: 'border-box' }}
+          style={{ 
+            width: paperSize === 'A4' ? '210mm' : '148mm', 
+            minHeight: paperSize === 'A4' ? '297mm' : '210mm', 
+            padding: paperSize === 'A4' ? '15mm 15mm 20mm 15mm' : '10mm 10mm 15mm 10mm', 
+            boxSizing: 'border-box' 
+          }}
         >
           {/* Header */}
           <div className="flex justify-between items-start mb-6">
@@ -141,17 +161,26 @@ export function BillPreview({ store, onClose, commitCounter }) {
           <div className="flex-grow"></div>
 
           {/* Watermark Logo */}
-          <div className="absolute font-cormorant font-bold text-orange tracking-tighter" style={{ fontSize: '76pt', opacity: 0.035, bottom: '40mm', right: '30mm', pointerEvents: 'none' }}>
+          <div 
+            className="absolute font-cormorant font-bold text-orange tracking-tighter" 
+            style={{ 
+              fontSize: paperSize === 'A4' ? '76pt' : '52pt', 
+              opacity: 0.035, 
+              bottom: paperSize === 'A4' ? '40mm' : '30mm', 
+              right: paperSize === 'A4' ? '30mm' : '20mm', 
+              pointerEvents: 'none' 
+            }}
+          >
             SS
           </div>
 
-          {/* Footer - absolute at bottom of printable sheet */}
-          <div className="absolute bottom-[20mm] left-[15mm] right-[15mm] border-t border-gray-200 pt-4 flex justify-between items-end">
-             <div className="italic text-gray-400 text-sm">
+          {/* Footer - Use relative positioning with flex-grow to ensure visibility */}
+          <div className="border-t border-gray-200 pt-4 flex justify-between items-end mt-4">
+             <div className="italic text-gray-400 text-xs sm:text-sm">
                Thank you for your business! 🙏
              </div>
-             <div className="text-right text-sm text-gray-600">
-               Authorised Signatory / For <span className="font-bold text-dark">{store.sellerName}</span>
+             <div className="text-right text-xs sm:text-sm text-gray-600">
+               Authorised Signatory / For <span className="font-bold text-dark text-sm sm:text-base">{store.sellerName}</span>
              </div>
           </div>
 
